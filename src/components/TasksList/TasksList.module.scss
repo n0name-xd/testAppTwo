@@ -3,4 +3,12 @@
   min-height: 500px;
   border: 1px solid black;
   padding: 40px;
+  height: 100%;
+
+  & .tasksListField {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100%;
+  }
 }

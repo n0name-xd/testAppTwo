@@ -1,5 +1,10 @@
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
+import styles from "./Task.module.scss";
+import deleteIcon from "@assets/icons/delete.svg";
+import editIcon from "@assets/icons/edit.svg";
+import { useAppDispatch } from "@store-hooks/hooks";
+import { removeTask } from "@store/toDo/toDoSlice";
 
 export interface ITaskProps {
   id: number;
@@ -19,6 +24,7 @@ export const Task: React.FC<ITaskProps> = ({
   index,
   moveCard,
 }): JSX.Element => {
+  const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
 
   const [{ handlerId }, drop] = useDrop({
@@ -31,7 +37,6 @@ export const Task: React.FC<ITaskProps> = ({
     hover(item, monitor) {
       if (!ref.current) return;
       const currentItem = item as DragItemType;
-
       const dragIndex = currentItem.index;
 
       const hoverIndex = index;
@@ -68,8 +73,18 @@ export const Task: React.FC<ITaskProps> = ({
   drag(drop(ref));
 
   return (
-    <div ref={ref} data-handler-id={handlerId}>
-      {text}
+    <div className={styles.task} ref={ref} data-handler-id={handlerId}>
+      <div className={styles.text}>{text}</div>
+      <div>
+        <img width={25} height={30} src={editIcon} alt="edit" />
+        <img
+          onClick={() => dispatch(removeTask(id))}
+          width={25}
+          height={30}
+          src={deleteIcon}
+          alt="delete"
+        />
+      </div>
     </div>
   );
 };

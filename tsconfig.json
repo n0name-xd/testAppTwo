@@ -16,7 +16,10 @@
     "jsx": "react-jsx",
     "types": ["vitest/globals"],
     "paths": {
-      "@/*": ["./src/components/*"]
+      "@/*": ["./src/components/*"],
+      "@store/*": ["./src/features/*"],
+      "@store-hooks/*": ["./src/app/*"],
+      "@assets/*": ["./src/assets/*"]
     }
   },
   "references": [{ "path": "./tsconfig.node.json" }]
