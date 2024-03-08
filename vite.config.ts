@@ -11,6 +11,18 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: "@", replacement: path.resolve(__dirname, "src/components") },
+      {
+        find: "@store",
+        replacement: path.resolve(__dirname, "src/features"),
+      },
+      {
+        find: "@store-hooks",
+        replacement: path.resolve(__dirname, "src/app"),
+      },
+      {
+        find: "@assets",
+        replacement: path.resolve(__dirname, "src/assets"),
+      },
     ],
   },
 });

@@ -4,42 +4,46 @@ import { createAppSlice } from "../../app/createAppSlice";
 export interface ToDoItem {
   id: number;
   text: string;
+  isDone: boolean;
 }
 
 export interface CounterSliceState {
-  value: number;
-  status: "idle" | "loading" | "failed";
+  idValue: number;
   toDoList: ToDoItem[];
 }
 
 const initialState: CounterSliceState = {
-  value: 0,
-  status: "idle",
+  idValue: 1,
   toDoList: [],
 };
 
-export const counterSlice = createAppSlice({
-  name: "counter",
+export const toDoSlice = createAppSlice({
+  name: "toDo",
   initialState,
   reducers: create => ({
-    increment: create.reducer(state => {
-      state.value += 1;
+    addTask: create.reducer((state, action: PayloadAction<string>): void => {
+      state.toDoList.push({
+        text: action.payload,
+        id: state.idValue++,
+        isDone: false,
+      });
     }),
-    decrement: create.reducer(state => {
-      state.value -= 1;
+    removeTask: create.reducer((state, action: PayloadAction<number>) => {
+      state.toDoList = state.toDoList.filter(el => el.id !== action.payload);
     }),
-    // incrementByAmount: create.reducer(
-    //   (state, action: PayloadAction<number>) => {
-    //     state.value += action.payload
-    //   },
-    // ),
+    updateTextTask: create.reducer(
+      (state, action: PayloadAction<{ id: number; text: string }>) => {},
+    ),
+    updateStatusTask: create.reducer(
+      (state, action: PayloadAction<{ id: number; idDone: boolean }>) => {},
+    ),
   }),
   selectors: {
-    selectCount: counter => counter.value,
-    selectStatus: counter => counter.status,
+    selectToDoList: toDoList => toDoList.toDoList,
   },
 });
 
-export const { decrement, increment } = counterSlice.actions;
+export const { addTask, removeTask, updateTextTask, updateStatusTask } =
+  toDoSlice.actions;
 
-export const { selectCount, selectStatus } = counterSlice.selectors;
+export const { selectToDoList } = toDoSlice.selectors;

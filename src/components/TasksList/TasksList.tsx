@@ -1,24 +1,11 @@
 import { Task } from "@/Task/Task";
 import styles from "./TasksList.module.scss";
 import update from "immutability-helper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-
-const initialState = [
-  {
-    id: 1,
-    text: "Write a cool JS library",
-  },
-  {
-    id: 2,
-    text: "Make it generic enough",
-  },
-  {
-    id: 3,
-    text: "Write README",
-  },
-];
+import { useAppSelector } from "@store-hooks/hooks";
+import { selectToDoList } from "@store/toDo/toDoSlice";
 
 export interface ITaskData {
   id: number;
@@ -26,7 +13,13 @@ export interface ITaskData {
 }
 
 export const TasksList: React.FC = (): JSX.Element => {
-  const [cards, setCards] = useState(initialState);
+  const toDoList = useAppSelector(selectToDoList);
+
+  const [cards, setCards] = useState(toDoList);
+
+  useEffect(() => {
+    setCards(toDoList);
+  }, [toDoList]);
 
   const moveTask = (dragIndex: number, hoverIndex: number) => {
     setCards(prevCards =>
@@ -39,7 +32,7 @@ export const TasksList: React.FC = (): JSX.Element => {
     );
   };
 
-  const renderTask = (task: ITaskData, index: number) => {
+  const tasksList = cards.map((task, index) => {
     return (
       <Task
         key={task.id}
@@ -49,12 +42,12 @@ export const TasksList: React.FC = (): JSX.Element => {
         moveCard={moveTask}
       />
     );
-  };
+  });
 
   return (
     <div className={styles.tasksList}>
       <DndProvider backend={HTML5Backend}>
-        <div>{cards.map((task, i) => renderTask(task, i))}</div>
+        <div className={styles.tasksListField}>{tasksList}</div>
       </DndProvider>
     </div>
   );
