@@ -3,6 +3,8 @@
 
 $color-yellow: rgba(232, 230, 19, 1);
 $color-violet: rgba(116, 9, 121, 0.6334908963585435);
+$color-violet-light: #a763aa;
+$color-red: red;
 
 body {
   background: $color-yellow;
@@ -16,9 +18,22 @@ body {
 }
 
 .btn_red {
-  background: red;
+  background: $color-red;
 }
 
 .btn_yellow {
   background: $color-yellow;
+}
+
+select {
+  height: 45px;
+  background-color: $color-violet-light;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: none;
+}
+
+select:focus {
+  border: none;
+  outline: none;
 }
