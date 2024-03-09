@@ -14,7 +14,7 @@ export const Modal: React.FC<IModalProps> = ({
     <>
       {isShow ? (
         <div className={styles.modalConfiner}>
-          <div className={styles.content}>{children}</div>
+          <div>{children}</div>
         </div>
       ) : null}
     </>

@@ -1,11 +1,6 @@
 @import url("./styles/normalize.scss");
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
-$color-yellow: rgba(232, 230, 19, 1);
-$color-violet: rgba(116, 9, 121, 0.6334908963585435);
-$color-violet-light: #a763aa;
-$color-red: red;
-
 body {
   background: $color-yellow;
   background: linear-gradient(90deg, $color-yellow 0%, $color-violet 100%);
