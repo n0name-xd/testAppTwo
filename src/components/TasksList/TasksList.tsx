@@ -4,8 +4,9 @@ import update from "immutability-helper";
 import { useEffect, useState } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { useAppSelector } from "@store-hooks/hooks";
-import { selectToDoList } from "@store/toDo/toDoSlice";
+import { useAppDispatch, useAppSelector } from "@store-hooks/hooks";
+import { saveDragPosition, selectToDoList } from "@store/toDo/toDoSlice";
+import type { ToDoItem } from "@store/toDo/toDoSlice";
 
 export interface ITaskData {
   id: number;
@@ -15,32 +16,44 @@ export interface ITaskData {
 interface ITasksListProps {
   setDeleteIdTask: (id: number) => void;
   setEditIdTask: (id: number, text: string) => void;
+  tasksCategory: string;
 }
 
 export const TasksList: React.FC<ITasksListProps> = ({
   setDeleteIdTask,
   setEditIdTask,
+  tasksCategory,
 }: ITasksListProps): JSX.Element => {
   const toDoList = useAppSelector(selectToDoList);
-
+  const dispatch = useAppDispatch();
   const [cards, setCards] = useState(toDoList);
 
   useEffect(() => {
     setCards(toDoList);
-  }, [toDoList]);
+  }, [toDoList, cards, tasksCategory]);
+
+  useEffect(() => {
+    dispatch(saveDragPosition(cards));
+  }, [cards]);
+
+  const taskFilter = (el: ToDoItem) => {
+    if (tasksCategory === "all") return el;
+    if (tasksCategory === "completed" && el.isDone === true) return el;
+    if (tasksCategory === "not completed" && el.isDone === false) return el;
+  };
 
   const moveTask = (dragIndex: number, hoverIndex: number) => {
-    setCards(prevCards =>
-      update(prevCards, {
+    setCards(prevCards => {
+      return update(prevCards, {
         $splice: [
           [dragIndex, 1],
           [hoverIndex, 0, prevCards[dragIndex]],
         ],
-      }),
-    );
+      });
+    });
   };
 
-  const tasksList = cards.map((task, index) => {
+  const tasksList = cards.filter(taskFilter).map((task, index) => {
     return (
       <Task
         key={task.id}

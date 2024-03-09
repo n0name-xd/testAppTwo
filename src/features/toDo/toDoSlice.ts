@@ -12,9 +12,23 @@ export interface CounterSliceState {
   toDoList: ToDoItem[];
 }
 
+const tasksLocalStorageKey = "todo";
+
+const getTasksDataFromLocalStorage = (): ToDoItem[] => {
+  const tasks = localStorage.getItem(tasksLocalStorageKey);
+
+  if (!tasks?.length) return [];
+  return JSON.parse(tasks);
+};
+
+const setTasksDataToLocalStorage = (data: ToDoItem[]): void => {
+  const jsonData = JSON.stringify(data);
+  localStorage.setItem(tasksLocalStorageKey, jsonData);
+};
+
 const initialState: CounterSliceState = {
-  idValue: 1,
-  toDoList: [],
+  idValue: Math.floor(Math.random() * 9_999),
+  toDoList: getTasksDataFromLocalStorage(),
 };
 
 export const toDoSlice = createAppSlice({
@@ -27,10 +41,14 @@ export const toDoSlice = createAppSlice({
         id: state.idValue++,
         isDone: false,
       });
+
+      setTasksDataToLocalStorage(state.toDoList);
     }),
 
     removeTask: create.reducer((state, action: PayloadAction<number>) => {
       state.toDoList = state.toDoList.filter(el => el.id !== action.payload);
+
+      setTasksDataToLocalStorage(state.toDoList);
     }),
 
     updateTextTask: create.reducer(
@@ -41,6 +59,8 @@ export const toDoSlice = createAppSlice({
         );
 
         state.toDoList[elem].text = action.payload.text;
+
+        setTasksDataToLocalStorage(state.toDoList);
       },
     ),
 
@@ -52,6 +72,16 @@ export const toDoSlice = createAppSlice({
         );
 
         state.toDoList[elem].isDone = !state.toDoList[elem].isDone;
+
+        setTasksDataToLocalStorage(state.toDoList);
+      },
+    ),
+
+    saveDragPosition: create.reducer(
+      (state, action: PayloadAction<ToDoItem[]>) => {
+        state.toDoList = action.payload;
+
+        setTasksDataToLocalStorage(state.toDoList);
       },
     ),
   }),
@@ -61,7 +91,12 @@ export const toDoSlice = createAppSlice({
   },
 });
 
-export const { addTask, removeTask, updateTextTask, updateStatusTask } =
-  toDoSlice.actions;
+export const {
+  addTask,
+  removeTask,
+  updateTextTask,
+  updateStatusTask,
+  saveDragPosition,
+} = toDoSlice.actions;
 
 export const { selectToDoList } = toDoSlice.selectors;

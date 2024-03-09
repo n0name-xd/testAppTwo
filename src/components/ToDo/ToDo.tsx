@@ -15,6 +15,7 @@ export const ToDo: React.FC = (): JSX.Element => {
   const [isShowMOdal, setIsShowMOdal] = useState<boolean>(false);
   const [taskId, setTaskId] = useState<number | null>(null);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [taskCategory, setTaskCategory] = useState<string>("all");
   const dispatch = useAppDispatch();
 
   const handleAddTask = (): void => {
@@ -62,10 +63,19 @@ export const ToDo: React.FC = (): JSX.Element => {
           style={{ maxWidth: "500px" }}
         />
         <CustomButton text="Add task" onClick={handleAddTask} />
+        <select
+          value={taskCategory}
+          onChange={e => setTaskCategory(e.target.value)}
+        >
+          <option value="all">all</option>
+          <option value="completed">completed</option>
+          <option value="not completed">not completed</option>
+        </select>
       </div>
       <TasksList
         setDeleteIdTask={handleGetIdTask}
         setEditIdTask={handleEditTask}
+        tasksCategory={taskCategory}
       />
       <Modal isShow={isShowMOdal}>
         {!isEdit ? (
