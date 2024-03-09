@@ -14,3 +14,11 @@ body {
   max-width: 1200px;
   margin: 0 auto;
 }
+
+.btn_red {
+  background: red;
+}
+
+.btn_yellow {
+  background: $color-yellow;
+}

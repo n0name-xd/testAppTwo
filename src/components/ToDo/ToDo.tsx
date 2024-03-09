@@ -3,11 +3,18 @@ import { CustomButton } from "@/common/CustomButton/CustomButton";
 import { CustomInput } from "@/common/CustomInput/CustomInput";
 import { useState } from "react";
 import { useAppDispatch } from "@store-hooks/hooks";
-import { addTask } from "@store/toDo/toDoSlice";
+import { addTask, removeTask, updateTextTask } from "@store/toDo/toDoSlice";
 import styles from "./ToDo.module.scss";
+import { Modal } from "@/common/Modal/Modal";
+import { ShureModal } from "@/common/ShureModal/ShureModal";
+import { InputModal } from "@/common/InputModal/InputModal";
 
 export const ToDo: React.FC = (): JSX.Element => {
   const [taskText, setTaskText] = useState<string>("");
+  const [editText, setEditText] = useState<string>("");
+  const [isShowMOdal, setIsShowMOdal] = useState<boolean>(false);
+  const [taskId, setTaskId] = useState<number | null>(null);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
   const dispatch = useAppDispatch();
 
   const handleAddTask = (): void => {
@@ -15,6 +22,33 @@ export const ToDo: React.FC = (): JSX.Element => {
 
     dispatch(addTask(taskText));
     setTaskText("");
+  };
+
+  const handleGetIdTask = (id: number): void => {
+    setIsEdit(false);
+    setIsShowMOdal(true);
+    setTaskId(id);
+  };
+
+  const handleDeleteTask = (): void => {
+    if (taskId) {
+      dispatch(removeTask(taskId));
+      setIsShowMOdal(false);
+    }
+  };
+
+  const handleEditTask = (id: number, text: string): void => {
+    setIsEdit(true);
+    setIsShowMOdal(true);
+    setEditText(text);
+    setTaskId(id);
+  };
+
+  const handelUpdateTask = () => {
+    if (taskId) {
+      dispatch(updateTextTask({ id: taskId, text: editText }));
+      setIsShowMOdal(false);
+    }
   };
 
   return (
@@ -29,7 +63,31 @@ export const ToDo: React.FC = (): JSX.Element => {
         />
         <CustomButton text="Add task" onClick={handleAddTask} />
       </div>
-      <TasksList />
+      <TasksList
+        setDeleteIdTask={handleGetIdTask}
+        setEditIdTask={handleEditTask}
+      />
+      <Modal isShow={isShowMOdal}>
+        {!isEdit ? (
+          <ShureModal
+            btnOneClassName="btn_red"
+            btnOneOnClick={handleDeleteTask}
+            btnOneText="Delete task"
+            btnTwoClassName="btn_yellow"
+            btnTwoOnClick={() => setIsShowMOdal(false)}
+            btnTwoText="Cancel"
+          />
+        ) : (
+          <InputModal
+            buttonOneClick={handelUpdateTask}
+            inputOnChange={setEditText}
+            inputValue={editText}
+            btnOneText="Save"
+            btnTwoText="Cancel"
+            buttonTwoClick={() => setIsShowMOdal(false)}
+          />
+        )}
+      </Modal>
     </>
   );
 };
