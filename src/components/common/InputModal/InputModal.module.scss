@@ -1,0 +1,13 @@
+.inputModalContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border-radius: 6px;
+  padding: 30px 50px;
+  background: white;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}

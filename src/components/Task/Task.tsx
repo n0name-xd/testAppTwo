@@ -4,13 +4,16 @@ import styles from "./Task.module.scss";
 import deleteIcon from "@assets/icons/delete.svg";
 import editIcon from "@assets/icons/edit.svg";
 import { useAppDispatch } from "@store-hooks/hooks";
-import { removeTask } from "@store/toDo/toDoSlice";
+import { updateStatusTask } from "@store/toDo/toDoSlice";
 
 export interface ITaskProps {
   id: number;
   text: string;
   index: number;
+  done: boolean;
   moveCard: (a: number, b: number) => void;
+  setDeleteIdTask: (id: number) => void;
+  setEditIdTask: (id: number, text: string) => void;
 }
 
 interface DragItemType {
@@ -22,10 +25,13 @@ export const Task: React.FC<ITaskProps> = ({
   id,
   text,
   index,
+  done,
   moveCard,
+  setDeleteIdTask,
+  setEditIdTask,
 }): JSX.Element => {
-  const dispatch = useAppDispatch();
   const ref = useRef<HTMLDivElement>(null);
+  const dispatch = useAppDispatch();
 
   const [{ handlerId }, drop] = useDrop({
     accept: "card",
@@ -74,11 +80,25 @@ export const Task: React.FC<ITaskProps> = ({
 
   return (
     <div className={styles.task} ref={ref} data-handler-id={handlerId}>
-      <div className={styles.text}>{text}</div>
+      <div className={styles.text}>
+        <input
+          type="checkbox"
+          style={{ marginRight: "10px" }}
+          onChange={() => dispatch(updateStatusTask({ id, idDone: done }))}
+          checked={done}
+        />
+        {text}
+      </div>
       <div>
-        <img width={25} height={30} src={editIcon} alt="edit" />
         <img
-          onClick={() => dispatch(removeTask(id))}
+          width={25}
+          height={30}
+          src={editIcon}
+          alt="edit"
+          onClick={() => setEditIdTask(id, text)}
+        />
+        <img
+          onClick={() => setDeleteIdTask(id)}
           width={25}
           height={30}
           src={deleteIcon}

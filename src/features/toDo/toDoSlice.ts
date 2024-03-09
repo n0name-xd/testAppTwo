@@ -22,22 +22,40 @@ export const toDoSlice = createAppSlice({
   initialState,
   reducers: create => ({
     addTask: create.reducer((state, action: PayloadAction<string>): void => {
-      state.toDoList.push({
+      state.toDoList.unshift({
         text: action.payload,
         id: state.idValue++,
         isDone: false,
       });
     }),
+
     removeTask: create.reducer((state, action: PayloadAction<number>) => {
       state.toDoList = state.toDoList.filter(el => el.id !== action.payload);
     }),
+
     updateTextTask: create.reducer(
-      (state, action: PayloadAction<{ id: number; text: string }>) => {},
+      (state, action: PayloadAction<{ id: number; text: string }>) => {
+        if (!action.payload.id) return;
+        const elem = state.toDoList.findIndex(
+          el => el.id === action.payload.id,
+        );
+
+        state.toDoList[elem].text = action.payload.text;
+      },
     ),
+
     updateStatusTask: create.reducer(
-      (state, action: PayloadAction<{ id: number; idDone: boolean }>) => {},
+      (state, action: PayloadAction<{ id: number; idDone: boolean }>) => {
+        if (!action.payload.id) return;
+        const elem = state.toDoList.findIndex(
+          el => el.id === action.payload.id,
+        );
+
+        state.toDoList[elem].isDone = !state.toDoList[elem].isDone;
+      },
     ),
   }),
+
   selectors: {
     selectToDoList: toDoList => toDoList.toDoList,
   },

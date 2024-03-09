@@ -12,7 +12,15 @@ export interface ITaskData {
   text: string;
 }
 
-export const TasksList: React.FC = (): JSX.Element => {
+interface ITasksListProps {
+  setDeleteIdTask: (id: number) => void;
+  setEditIdTask: (id: number, text: string) => void;
+}
+
+export const TasksList: React.FC<ITasksListProps> = ({
+  setDeleteIdTask,
+  setEditIdTask,
+}: ITasksListProps): JSX.Element => {
   const toDoList = useAppSelector(selectToDoList);
 
   const [cards, setCards] = useState(toDoList);
@@ -40,6 +48,9 @@ export const TasksList: React.FC = (): JSX.Element => {
         id={task.id}
         text={task.text}
         moveCard={moveTask}
+        setDeleteIdTask={setDeleteIdTask}
+        setEditIdTask={setEditIdTask}
+        done={task.isDone}
       />
     );
   });
